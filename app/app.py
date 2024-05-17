@@ -18,7 +18,7 @@ def login():
     sp_oauth = SpotifyOAuth(client_id=app.config['SPOTIPY_CLIENT_ID'],
                             client_secret=app.config['SPOTIPY_CLIENT_SECRET'],
                             redirect_uri=app.config['SPOTIPY_REDIRECT_URI'],
-                            scope="user-read-playback-state user-modify-playback-state")
+                            scope="user-read-playback-state user-modify-playback-state streaming")
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
@@ -48,6 +48,9 @@ def get_spotify_client():
 def sanitize_lyrics(lyrics):
     return [line.strip() for line in lyrics if line.strip()]
 
+def lyrics_to_dicts(lyrics):
+    return [{'timestamp': lyric.timestamp, 'line': lyric.line} for lyric in lyrics]
+
 @app.route('/sync')
 def sync():
     sp = get_spotify_client()
@@ -55,6 +58,9 @@ def sync():
         return redirect(url_for('login'))
     
     current_track = sp.current_playback()
+    if not current_track or not current_track['is_playing']:
+        return "No song currently playing", 404
+
     song_id = current_track['item']['id']
     song_name = current_track['item']['name']
     artists = ', '.join([artist['name'] for artist in current_track['item']['artists']])
@@ -95,6 +101,35 @@ def display(song_id):
         return 'Song not found', 404
 
     return render_template('display.html', song_name=song.name, artists=song.artists, lyrics=song.lyrics)
+
+@app.route('/karaoke')
+def karaoke():
+    sp = get_spotify_client()
+    if not sp:
+        return redirect(url_for('login'))
+
+    current_track = sp.current_playback()
+    if not current_track or not current_track['is_playing']:
+        return "No song currently playing", 404
+
+    song_id = current_track['item']['id']
+    song_name = current_track['item']['name']
+    artists = ', '.join([artist['name'] for artist in current_track['item']['artists']])
+
+    lyrics_response = requests.get(f'https://api.lyrics.ovh/v1/{current_track["item"]["artists"][0]["name"]}/{song_name}')
+    if lyrics_response.status_code == 200:
+        raw_lyrics = lyrics_response.json().get('lyrics', '').split('\n')
+        lyrics = sanitize_lyrics(raw_lyrics)
+    else:
+        lyrics = ["Lyrics not found"]
+
+    song = Song.query.get(song_id)
+    if song:
+        synced_lyrics = lyrics_to_dicts(song.lyrics)
+    else:
+        synced_lyrics = None
+
+    return render_template('karaoke.html', song_id=song_id, song_name=song_name, artists=artists, lyrics=lyrics, synced_lyrics=synced_lyrics, token=session['token_info']['access_token'])
 
 if __name__ == '__main__':
     with app.app_context():
