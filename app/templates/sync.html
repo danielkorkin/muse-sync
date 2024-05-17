@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sync Lyrics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+</head>
+<body>
+    <h1>Sync Lyrics for {{ song_name }} by {{ artists }}</h1>
+    <div id="lyricsContainer">
+        <div id="currentLine"></div>
+        <div id="nextLine"></div>
+    </div>
+    <button id="startButton">Start Sync</button>
+    <button id="saveButton" onclick="saveLyrics()">Save Lyrics</button>
+
+    <script>
+        const lyricsArray = [];
+        const lyrics = {{ lyrics | tojson | safe }};
+        let currentLine = 0;
+        let player;
+        let startTime;
+
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const token = '{{ token }}';
+            player = new Spotify.Player({
+                name: 'Web Playback SDK',
+                getOAuthToken: cb => { cb(token); }
+            });
+
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+
+            player.addListener('player_state_changed', state => {
+                if (!state) {
+                    return;
+                }
+
+                if (state.paused && startTime) {
+                    startTime = null;
+                }
+            });
+
+            player.connect();
+        };
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            player.resume().then(() => {
+                startTime = new Date().getTime() / 1000;
+                displayCurrentNextLines();
+            });
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Enter' && startTime) {
+                const currentTime = new Date().getTime() / 1000 - startTime;
+                lyricsArray.push({ line: lyrics[currentLine], timestamp: currentTime });
+                currentLine++;
+                if (currentLine >= lyrics.length) {
+                    alert('All lines synced!');
+                } else {
+                    displayCurrentNextLines();
+                }
+            }
+        });
+
+        function displayCurrentNextLines() {
+            document.getElementById('currentLine').innerText = lyrics[currentLine] || '';
+            document.getElementById('nextLine').innerText = lyrics[currentLine + 1] || '';
+        }
+
+        function saveLyrics() {
+            fetch('/save_lyrics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    song_id: '{{ song_id }}',
+                    song_name: '{{ song_name }}',
+                    artists: '{{ artists }}',
+                    lyrics: lyricsArray
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                alert('Lyrics saved successfully!');
+            });
+        }
+    </script>
+</body>
+</html>

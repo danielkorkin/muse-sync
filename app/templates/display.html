@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Lyrics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Lyrics for {{ song_name }} by {{ artists }}</h1>
+    <div id="lyricsDisplay">
+        {% for lyric in lyrics %}
+            <p>{{ lyric.timestamp }} - {{ lyric.line }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

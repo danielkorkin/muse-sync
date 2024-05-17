@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+#lyricsContainer {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+#currentLine {
+    color: #1db954;
+    font-weight: bold;
+}
+
+#nextLine {
+    color: #888;
+}
+
+button, .button {
+    font-size: 16px;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+button:hover, .button:hover {
+    background-color: #1ed760;
+}
