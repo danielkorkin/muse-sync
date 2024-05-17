@@ -45,6 +45,9 @@ def get_spotify_client():
         session['token_info'] = token_info
     return Spotify(auth=token_info['access_token'])
 
+def sanitize_lyrics(lyrics):
+    return [line.strip() for line in lyrics if line.strip()]
+
 @app.route('/sync')
 def sync():
     sp = get_spotify_client()
@@ -58,7 +61,8 @@ def sync():
 
     lyrics_response = requests.get(f'https://api.lyrics.ovh/v1/{current_track["item"]["artists"][0]["name"]}/{song_name}')
     if lyrics_response.status_code == 200:
-        lyrics = lyrics_response.json().get('lyrics', '').split('\n')
+        raw_lyrics = lyrics_response.json().get('lyrics', '').split('\n')
+        lyrics = sanitize_lyrics(raw_lyrics)
     else:
         lyrics = ["Lyrics not found"]
 
