@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ song_name }} Synced</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="center">
+        <h1>
+            <a href="http://open.spotify.com/track/{{ song_id }}">{{ song_name }} by {{ artists }}</a> synced successfully 🎉
+        </h1>
+        <p>
+            Thank you for you contribution, this project wouldn't be possible without you!
+        </p>
+    </div>
+</body>
+</html>

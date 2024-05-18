@@ -85,7 +85,7 @@
                 })
             }).then(response => response.json()).then(data => {
                 console.log(data);
-                alert('Lyrics saved successfully!');
+                window.location = "/thankyou/{{ song_name }}/{{ artists }}/{{ song_id }}"
             });
         }
     </script>

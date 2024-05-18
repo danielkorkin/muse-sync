@@ -38,6 +38,11 @@ button, .button {
     text-decoration: none;
 }
 
+a {
+    color: #1ed760;
+    text-decoration: underline;
+}
+
 button:hover, .button:hover {
     background-color: #1ed760;
 }
@@ -53,4 +58,9 @@ button:hover, .button:hover {
     -webkit-transform: translate(-50%, -50%); /* Safari and Chrome*/
     -o-transform: translate(-50%, -50%); /* Opera */
     transform: translate(-50%, -50%);
+}
+
+#disclaimer {
+    padding-top: 10px;
+    font-size: 10px;
 }

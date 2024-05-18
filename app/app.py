@@ -1,13 +1,12 @@
 from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
-from models import db, Song, Lyric
+from config import db
 import requests
 import time
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-db.init_app(app)
 
 @app.route('/')
 def index():
@@ -56,7 +55,7 @@ def sync():
     
     current_track = sp.current_playback()
     if not current_track or not current_track['is_playing']:
-        return "No song currently playing", 404
+        return render_template('no-sync.html')
     song_id = current_track['item']['id']
     song_name = current_track['item']['name']
     artists = ', '.join([artist['name'] for artist in current_track['item']['artists']])
@@ -78,27 +77,35 @@ def save_lyrics():
     artists = data['artists']
     lyrics = data['lyrics']
 
-    song = Song.query.get(song_id)
-    if not song:
-        song = Song(id=song_id, name=song_name, artists=artists)
-        db.session.add(song)
+    song_ref = db.collection('songs').document(song_id)
+    song_ref.set({
+        'name': song_name,
+        'artists': artists
+    })
 
     for lyric in lyrics:
-        new_lyric = Lyric(song_id=song_id, timestamp=lyric['timestamp'], line=lyric['line'])
-        db.session.add(new_lyric)
+        db.collection('songs').document(song_id).collection('lyrics').add({
+            'timestamp': lyric['timestamp'],
+            'line': lyric['line']
+        })
 
-    db.session.commit()
     return jsonify({'status': 'success'})
 
 @app.route('/display/<song_id>')
 def display(song_id):
-    song = Song.query.get(song_id)
-    if not song:
+    song_ref = db.collection('songs').document(song_id).get()
+    if not song_ref.exists:
         return 'Song not found', 404
 
-    return render_template('display.html', song_name=song.name, artists=song.artists, lyrics=song.lyrics)
+    song = song_ref.to_dict()
+    lyrics_ref = db.collection('songs').document(song_id).collection('lyrics').order_by('timestamp').stream()
+    lyrics = [lyric.to_dict() for lyric in lyrics_ref]
+
+    return render_template('display.html', song_name=song['name'], artists=song['artists'], lyrics=lyrics)
+
+@app.route('/thankyou/<song_name>/<artists>/<song_id>')
+def thankyou(song_name, artists, song_id):
+    return render_template('thank_you.html', song_name=song_name, artists=artists, song_id=song_id)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
