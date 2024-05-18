@@ -63,7 +63,7 @@ def sync():
     lyrics_response = requests.get(f'https://api.lyrics.ovh/v1/{current_track["item"]["artists"][0]["name"]}/{song_name}')
     if lyrics_response.status_code == 200:
         raw_lyrics = lyrics_response.json().get('lyrics', '').split('\n')
-        lyrics = sanitize_lyrics(raw_lyrics)
+        lyrics = ["\n"] + sanitize_lyrics(raw_lyrics)
     else:
         lyrics = ["Lyrics not found"]
 

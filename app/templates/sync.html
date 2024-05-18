@@ -7,13 +7,15 @@
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </head>
 <body>
-    <h1>Sync Lyrics for {{ song_name }} by {{ artists }}</h1>
-    <div id="lyricsContainer">
-        <div id="currentLine"></div>
-        <div id="nextLine"></div>
+    <div class="center">
+        <h1>Sync Lyrics for {{ song_name }} by {{ artists }}</h1>
+        <div id="lyricsContainer">
+            <div id="currentLine"></div>
+            <div id="nextLine"></div>
+        </div>
+        <button id="startButton">Start Sync</button>
+        <button id="saveButton" onclick="saveLyrics()">Save Lyrics</button>
     </div>
-    <button id="startButton">Start Sync</button>
-    <button id="saveButton" onclick="saveLyrics()">Save Lyrics</button>
 
     <script>
         const lyricsArray = [];
