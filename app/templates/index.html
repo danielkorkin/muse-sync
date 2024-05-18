@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Welcome to My Musixmatch</h1>
-    <p>This application allows you to sync lyrics with Spotify songs and view them with timestamps.</p>
-    <a href="{{ url_for('login') }}" class="button">Login with Spotify</a>
+    <div class="center">
+        <h1>Welcome to My Musixmatch</h1>
+        <p>This application allows you to sync lyrics with Spotify songs and view them with timestamps.</p>
+        <a href="{{ url_for('login') }}" class="button">Login with Spotify</a>
+    </div>  
 </body>
 </html>

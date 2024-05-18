@@ -55,6 +55,8 @@ def sync():
         return redirect(url_for('login'))
     
     current_track = sp.current_playback()
+    if not current_track or not current_track['is_playing']:
+        return "No song currently playing", 404
     song_id = current_track['item']['id']
     song_name = current_track['item']['name']
     artists = ', '.join([artist['name'] for artist in current_track['item']['artists']])

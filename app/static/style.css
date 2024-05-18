@@ -1,10 +1,15 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: sans-serif, sans-serif;
     margin: 20px;
+    background-color: #121212;
 }
 
 h1 {
-    color: #333;
+    color: #ffffff;
+}
+
+p { 
+    color: #ffffff;
 }
 
 #lyricsContainer {
@@ -35,4 +40,17 @@ button, .button {
 
 button:hover, .button:hover {
     background-color: #1ed760;
+}
+
+.center {
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -moz-transform: translate(-50%, -50%); /* Firefox */
+    -ms-transform: translate(-50%, -50%);  /* IE 9 */
+    -webkit-transform: translate(-50%, -50%); /* Safari and Chrome*/
+    -o-transform: translate(-50%, -50%); /* Opera */
+    transform: translate(-50%, -50%);
 }
