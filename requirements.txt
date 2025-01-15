@@ -6,7 +6,7 @@ cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
 cryptography==42.0.7
-firebase-admin==6.5.0
+firebase-admin==6.6.0
 Flask==3.0.3
 google-api-core==2.19.0
 google-api-python-client==2.129.0
