@@ -1,11 +1,11 @@
 blinker==1.8.2
 CacheControl==0.14.0
 cachetools==5.3.3
-certifi==2024.2.2
+certifi==2024.7.4
 cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
-cryptography==42.0.7
+cryptography==44.0.1
 firebase-admin==6.5.0
 Flask==3.0.3
 google-api-core==2.19.0
@@ -23,7 +23,7 @@ grpcio-status==1.62.2
 httplib2==0.22.0
 idna==3.7
 itsdangerous==2.2.0
-Jinja2==3.1.4
+Jinja2==3.1.5
 MarkupSafe==2.1.5
 msgpack==1.0.8
 proto-plus==1.23.0
@@ -35,10 +35,10 @@ PyJWT==2.8.0
 pyparsing==3.1.2
 python-dotenv==1.0.1
 redis==5.0.4
-requests==2.31.0
+requests==2.32.2
 rsa==4.9
 six==1.16.0
 spotipy==2.23.0
 uritemplate==4.1.1
-urllib3==2.2.1
-Werkzeug==3.0.3
+urllib3==2.2.2
+Werkzeug==3.0.6
